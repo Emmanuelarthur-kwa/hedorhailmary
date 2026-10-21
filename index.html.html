@@ -1,0 +1,448 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HAIL MARY</title>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;800&family=Public+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#12233f;--paper:#f6f4ee;--card:#fff;--blue:#2d5b9a;--blue-dark:#214577;--gold:#c9972b;--line:#ddd8cb;--muted:#5f6670;--danger:#b3261e;--green:#1f7a4d;--display:'Bricolage Grotesque','Segoe UI',sans-serif;--body:'Public Sans','Segoe UI',sans-serif}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);font:400 16px/1.55 var(--body)}
+h1,h2,h3{font-family:var(--display);line-height:1.15;margin:0}
+h1{font-size:2rem;font-weight:800;margin-bottom:1.25rem}
+h2{font-size:1.2rem;font-weight:600;margin-bottom:1rem}
+h3{font-size:1.05rem;font-weight:600;margin:.4rem 0 .2rem}
+:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+input,select,textarea{width:100%;padding:.6rem .7rem;border:1px solid var(--line);border-radius:6px;background:#fff;font:inherit;color:inherit}
+textarea{min-height:90px;resize:vertical}
+label{display:grid;gap:.3rem;font-weight:500;font-size:.9rem}
+button{padding:.65rem 1.1rem;border:0;border-radius:6px;background:var(--blue);color:#fff;font:600 .95rem var(--body);cursor:pointer}
+button:hover{background:var(--blue-dark)}
+button:disabled{opacity:.45;cursor:default}
+button.ghost{background:transparent;color:#fff;border:1px solid #ffffff66;padding:.4rem .8rem}
+button.ghost:hover:not(:disabled){background:#ffffff22}
+button.pale{background:transparent;color:var(--ink);border:1px solid var(--line);padding:.4rem .8rem}
+button.link{background:none;color:var(--blue-dark);padding:0;font-weight:500}
+button.danger{color:var(--danger)}
+.error{color:var(--danger);font-weight:500;margin:.5rem 0 0}
+.empty,.hint{color:var(--muted);margin:0}
+.hint{font-size:.85rem}
+.bar{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:.6rem 1.5rem;padding:.7rem 1.25rem;background:var(--ink);color:#fff}
+.brand{font:800 1.2rem var(--display);letter-spacing:.14em;color:var(--gold)}
+.bar nav{display:flex;gap:.25rem;flex-wrap:wrap;flex:1}
+.bar nav button{background:transparent;color:#d8dfec;padding:.45rem .8rem}
+.bar nav button:hover{background:#ffffff1a}
+.bar nav button.on{background:#ffffff26;color:#fff;box-shadow:inset 0 -3px var(--gold)}
+.who{display:flex;align-items:center;gap:.5rem}
+.who span{font-size:.9rem;margin-right:.5rem}
+.page{max-width:1000px;margin:0 auto;padding:1.75rem 1.25rem 4rem}
+.panel{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:1.25rem;margin-bottom:1.25rem}
+.panel-head{display:flex;justify-content:space-between;align-items:center;gap:1rem;flex-wrap:wrap;margin-bottom:1rem}
+.panel-head h2{margin:0}
+.panel-head select{width:auto}
+.actions{display:flex;gap:.6rem;align-items:center;flex-wrap:wrap}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:1rem;margin-bottom:1.25rem}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:1rem 1.1rem}
+.stat span{display:block;color:var(--muted);font-size:.85rem}
+.stat strong{font:800 1.6rem var(--display)}
+.progress{height:12px;background:#e6e2d6;border-radius:99px;overflow:hidden;margin:.4rem 0 .3rem}
+.progress div{height:100%;background:var(--green)}
+.months{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:.75rem}
+.tile{border:1px solid var(--line);border-radius:8px;padding:.7rem .8rem;background:#fff}
+.tile b{display:block;font-family:var(--display)}
+.tile small{color:var(--muted)}
+.tile.paid{border-color:var(--green);background:#eef7f1}
+.tile.partial{border-color:var(--gold);background:#fbf5e6}
+.tile.overdue,.tile.missed{border-color:var(--danger);background:#fcefee}
+.tile.due{border-color:var(--blue);background:#edf3fb}
+.tile.future,.tile.na{opacity:.55}
+.chip{display:inline-block;padding:.1rem .55rem;border-radius:99px;font-size:.78rem;font-weight:600;background:#e6e2d6}
+.chip.paid{background:#cfe9da;color:#14573a}.chip.partial{background:#f4e3b5;color:#7a5a0e}.chip.overdue,.chip.missed{background:#f6d0cd;color:#8a1b15}.chip.due{background:#d3e2f6;color:var(--blue-dark)}
+.big{text-align:center;padding:2rem 1rem}
+.big .amt{font:800 2.6rem var(--display)}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:1rem;align-items:end}
+.grid .wide{grid-column:1/-1}
+.scroll{overflow-x:auto}
+table{width:100%;border-collapse:collapse}
+th,td{text-align:left;padding:.6rem .7rem;border-bottom:1px solid var(--line)}
+th{font-weight:600;color:var(--muted);font-size:.85rem}
+td.num,th.num{text-align:right;font-variant-numeric:tabular-nums}
+tfoot td{font-weight:600;border-bottom:0}
+.ann{padding:.9rem 0;border-bottom:1px solid var(--line)}
+.ann:last-child{border-bottom:0}
+.ann p{margin:0 0 .3rem;white-space:pre-wrap}
+.gallery{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:1rem}
+.gallery figure{margin:0;border:1px solid var(--line);border-radius:8px;overflow:hidden;background:var(--paper)}
+.gallery img,.gallery video{width:100%;aspect-ratio:4/3;object-fit:cover;display:block;background:#000}
+.gallery figcaption{display:flex;justify-content:space-between;gap:.5rem;padding:.55rem .75rem;font-size:.9rem}
+.login{min-height:100vh;display:grid;grid-template-columns:1.1fr 1fr}
+.login-hero{background:var(--ink);color:#fff;padding:4rem 3rem;display:flex;flex-direction:column;justify-content:center;gap:1rem}
+.beads{width:min(190px,60%);color:var(--gold)}
+.login-hero h1{font-size:clamp(2.4rem,6vw,4rem);letter-spacing:.1em;margin:0}
+.login-hero p{margin:0;max-width:30ch;color:#c9d2e3;font-size:1.1rem}
+.login-form{align-self:center;justify-self:center;width:min(380px,90%);display:grid;gap:1rem;padding:2rem 0}
+.seg{display:flex;border:1px solid var(--line);border-radius:8px;overflow:hidden}
+.seg button{flex:1;border-radius:0;background:#fff;color:var(--ink)}
+.seg button:not(.on):hover{background:var(--paper)}
+.seg button.on{background:var(--ink);color:#fff}
+.badge{align-self:flex-start;background:var(--gold);color:var(--ink);font:800 .75rem var(--display);letter-spacing:.15em;padding:.25rem .6rem;border-radius:4px}
+@media(max-width:760px){.login{grid-template-columns:1fr}.login-hero{padding:2.5rem 1.5rem}}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<script>
+/* ===== data: records in localStorage, photos and videos in IndexedDB ===== */
+const FEE = 20;
+const PAY_NUMBER = '0508697114', PAY_NAME = 'SAMUEL KWAME AGBO'; // the number that receives members' payments (shown on every member's dashboard)
+const ADMIN_PW = 'HailMary123!'; // the administrator signs in with this password only (change it here and reopen the page to reset it)
+const START = '2026-10'; // dues start in October 2026
+const $ = s => document.querySelector(s);
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const LS = { get:(k,d)=>{try{return JSON.parse(localStorage.getItem(k))??d}catch{return d}}, set:(k,v)=>localStorage.setItem(k,JSON.stringify(v)) };
+const ym = d => d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0');
+const cur = ym(new Date());
+const from = u => u.joined > START ? u.joined : START;                      // first month a member owes
+const shiftMonth = (m, n) => { const [y,mo] = m.split('-').map(Number); return ym(new Date(y, mo-1+n, 1)); };
+let users = LS.get('hm_users', null);
+if (!users) { users = [{id:1,name:'Administrator',phone:'0000000000',pw:ADMIN_PW,role:'ADMIN',joined:cur}]; LS.set('hm_users', users); }
+let pays = LS.get('hm_pays', []), anns = LS.get('hm_anns', []), pin = LS.get('hm_pin', ''), marks = LS.get('hm_marks', []), bin = LS.get('hm_bin', []);
+let session = JSON.parse(sessionStorage.getItem('hm_session') || 'null');
+let page = null, hist = [], mode = 'login', notice = '', reveal = false, viewId = null, adminMonth = cur, fails = 0, lockUntil = 0, yr = new Date().getFullYear(), filter = '', last = {userId:'', month:cur}, urls = [];
+const save = () => { LS.set('hm_users', users); LS.set('hm_pays', pays); LS.set('hm_anns', anns); LS.set('hm_pin', pin); LS.set('hm_marks', marks); LS.set('hm_bin', bin); };
+const nextId = l => l.reduce((m,x)=>Math.max(m,x.id),0) + 1;
+const toBin = (kind, item) => bin.push({bid: bin.reduce((m,x)=>Math.max(m,x.bid),0) + 1, kind, item, at: Date.now()});
+const isMarked = (uid, m) => marks.some(x=>x.userId===uid && x.month===m);
+const cedis = n => 'GH₵' + Number(n).toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2});
+const monthLabel = m => { const [y,mo]=m.split('-'); return new Date(y,mo-1,1).toLocaleDateString(undefined,{month:'long',year:'numeric'}); };
+const shortMonth = i => new Date(2000,i,1).toLocaleDateString(undefined,{month:'short'});
+const dateLabel = d => new Date(d+'T00:00:00').toLocaleDateString(undefined,{day:'numeric',month:'short',year:'numeric'});
+const nameOf = id => (users.find(u=>u.id===id)||{name:'(removed member)'}).name;
+const paidFor = (uid,m) => pays.filter(p=>p.userId===uid&&p.month===m).reduce((s,p)=>s+p.amount,0);
+const normPhone = p => { p = p.replace(/[^\d+]/g,''); if (p.startsWith('+233')) p = '0' + p.slice(4); else if (/^233\d{9}$/.test(p)) p = '0' + p.slice(3); else if (/^\d{9}$/.test(p)) p = '0' + p; return /^0\d{9}$/.test(p) ? p : null; };
+
+const hex = b => [...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,'0')).join('');
+const hashPw = async (pw, salt) => (window.crypto && crypto.subtle) ? hex(await crypto.subtle.digest('SHA-256', new TextEncoder().encode(salt + pw))) : pw;
+const setPw = async (u, pw) => { u.salt = hex(crypto.getRandomValues(new Uint8Array(12))); u.pw = await hashPw(pw, u.salt); delete u.defaultPw; };
+const checkPw = async (u, pw) => u.salt ? (await hashPw(pw, u.salt)) === u.pw : u.pw === pw;
+const mask = p => reveal ? p : p.slice(0,3) + '••••' + p.slice(-3);
+
+const db = new Promise((res,rej)=>{ const r=indexedDB.open('hm_media',1);
+  r.onupgradeneeded=()=>r.result.createObjectStore('media',{keyPath:'id',autoIncrement:true});
+  r.onsuccess=()=>res(r.result); r.onerror=()=>rej(r.error); });
+const tx = async (mode, fn) => { const d = await db; return new Promise((res,rej)=>{
+  const t=d.transaction('media',mode); const q=fn(t.objectStore('media'));
+  t.oncomplete=()=>res(q&&q.result); t.onerror=()=>rej(t.error); }); };
+const allMedia = async () => (await tx('readonly', s=>s.getAll())).filter(m=>!m.deleted).sort((a,b)=>b.at-a.at);
+const deletedMedia = async () => (await tx('readonly', s=>s.getAll())).filter(m=>m.deleted).sort((a,b)=>b.deleted-a.deleted);
+
+/* ===== navigation (with Back) ===== */
+const go = p => { reveal = false; if (p !== page) { if (page) hist.push(page); page = p; } };
+const NAV = {
+  MEMBER: [['dashboard','Dashboard'],['records','My Records'],['current','Current Month'],['events','Events & Announcements'],['account','Account']],
+  ADMIN:  [['dashboard','Dashboard'],['payments','Payments'],['members','Members'],['events','Events & Announcements'],['trash','Deleted items']]
+};
+
+/* ===== views ===== */
+const beads = () => { let c=''; for (let i=0;i<15;i++){ const a=i/15*2*Math.PI; c+=`<circle cx="${(100+70*Math.sin(a)).toFixed(1)}" cy="${(90-70*Math.cos(a)).toFixed(1)}" r="6" fill="currentColor"/>`; }
+  return `<svg class="beads" viewBox="0 0 200 230" aria-hidden="true">${c}<path d="M100 160v52M80 182h40" stroke="currentColor" stroke-width="6" stroke-linecap="round"/></svg>`; };
+
+const loginView = () => {
+  const admin = mode === 'admin', setting = mode === 'signup' || mode === 'forgot';
+  const title = {login:'Member sign-in', signup:'Create your account', forgot:'Reset your password', admin:'Admin sign-in'}[mode];
+  return `<div class="login"><section class="login-hero">${beads()}${admin?'<span class="badge">ADMIN SPACE</span>':''}<h1>HAIL MARY</h1><p>${admin?'Sign in to manage members, payments, events and announcements.':'Keep track of your monthly dues, events and announcements.'}</p></section>
+<form class="login-form" id="${admin?'adminLogin':mode}">
+<div class="seg"><button type="button" class="${admin?'':'on'}" data-act="role" data-id="member">Member</button><button type="button" class="${admin?'on':''}" data-act="role" data-id="admin">Admin</button></div>
+<h2>${title}</h2>
+${notice?`<p class="hint" style="color:var(--green);font-weight:600">${esc(notice)}</p>`:''}
+${setting?'<label>Full name<input name="name" autocomplete="name" required></label>':''}
+${admin?'':'<label>Phone number<input name="phone" type="tel" inputmode="tel" placeholder="0241234567" autocomplete="tel" required></label>'}
+<label>${mode==='forgot'?'New password':admin?'Admin password':'Password'}<input type="password" name="pw" id="pw" minlength="${setting?6:1}" autocomplete="${setting?'new-password':'current-password'}" required></label>
+<label style="display:flex;gap:.5rem;align-items:center;font-weight:400"><input type="checkbox" data-act="showpw" style="width:auto"> Show password</label>
+<p class="error" id="err" role="alert" hidden></p>
+<button>${{login:'Sign in',admin:'Sign in as admin',signup:'Create account',forgot:'Reset password'}[mode]}</button>
+${mode==='login'?'<button type="button" class="link" data-act="mode" data-id="forgot">Forgot your password?</button>':''}
+${admin?'':`<button type="button" class="link" data-act="mode" data-id="${mode==='login'?'signup':'login'}">${mode==='login'?'New here? Create an account':mode==='signup'?'Already have an account? Sign in':'Back to sign in'}</button>`}
+${admin?'<p class="hint">Enter the administrator password. Members use the Member tab.</p>':''}
+${mode==='forgot'?'<p class="hint">Enter the full name and phone number you used to create your account, then choose a new password.</p>':''}</form></div>`; };
+
+const header = () => `<header class="bar"><div class="brand">HAIL MARY</div>
+<nav>${NAV[session.role].map(([id,l])=>`<button class="${page===id||(id==='members'&&page==='member')?'on':''}" data-act="nav" data-id="${id}">${l}</button>`).join('')}</nav>
+<div class="who"><span>${esc(session.name)}</span><button class="ghost" data-act="back"${hist.length?'':' disabled'}>← Back</button><button class="ghost" data-act="logout">Log out</button></div></header>`;
+
+function gallery(media, admin) {
+  if (!media.length) return '<p class="empty">No photos or videos have been uploaded yet.</p>';
+  return `<div class="gallery">${media.map(m => { const u = URL.createObjectURL(m.blob); urls.push(u);
+    const el = m.type.startsWith('video/') ? `<video src="${u}" controls preload="metadata"></video>` : `<img src="${u}" alt="${esc(m.title)}">`;
+    return `<figure>${el}<figcaption><span>${esc(m.title)}</span>${admin?`<button class="link danger" data-act="delMedia" data-id="${m.id}">Delete</button>`:''}</figcaption></figure>`; }).join('')}</div>`;
+}
+
+const LABEL = {paid:'Paid',partial:'Part paid',due:'Due now',overdue:'Overdue',missed:'Not paid',future:'Upcoming',na:'—'};
+function monthStatus(u, key) {
+  const amt = paidFor(u.id, key);
+  if (amt >= FEE) return 'paid'; if (amt > 0) return 'partial';
+  if (key < from(u)) return 'na'; if (key > cur) return 'future'; if (isMarked(u.id, key)) return 'missed'; return key === cur ? 'due' : 'overdue';
+}
+
+function dashboardView(uid, title) {
+  const u = users.find(x=>x.id===(uid||session.id)); let paidTotal=0, req=0, paidMonths=0, owed=0, tiles='';
+  for (let i=0;i<12;i++) {
+    const key = yr + '-' + String(i+1).padStart(2,'0'), amt = paidFor(u.id,key), st = monthStatus(u,key);
+    paidTotal += amt; if (amt >= FEE) paidMonths++;
+    if (key >= from(u) && key <= cur) { req++; owed += Math.max(0, FEE-amt); }
+    tiles += `<div class="tile ${st}"><b>${shortMonth(i)}</b><span class="chip ${st}">${LABEL[st]}</span><br><small>${amt?cedis(amt):st==='na'?'Not required':cedis(FEE)+' due'}</small></div>`;
+  }
+  const pct = Math.min(100, Math.round(100*paidMonths/Math.max(req,1)));
+  return `<h1>${esc(title||'Dashboard')}</h1>${!uid&&pin?`<section class="panel" style="border-color:var(--gold)"><strong>Message from the admin</strong><p style="margin:.3rem 0 0;white-space:pre-wrap">${esc(pin)}</p></section>`:''}
+${!uid?`<section class="panel" style="border-color:var(--gold)"><h2>Where to send your payments</h2><p style="font:800 1.8rem var(--display);margin:0">${esc(PAY_NUMBER)}</p><p style="margin:.2rem 0 .6rem"><strong>${esc(PAY_NAME)}</strong></p><p class="hint">This is the number that receives your payments. Once you have paid, the admin records it and it shows on your dashboard.</p><br><button class="pale" data-act="copy">Copy number</button></section>`:''}
+<div class="stats"><div class="stat"><span>Monthly dues</span><strong>${cedis(FEE)}</strong></div>
+<div class="stat"><span>Paid in ${yr}</span><strong>${cedis(paidTotal)}</strong></div>
+<div class="stat"><span>Months paid</span><strong>${paidMonths}</strong></div>
+<div class="stat"><span>Balance owed</span><strong style="color:${owed?'var(--danger)':'var(--green)'}">${cedis(owed)}</strong></div></div>
+<section class="panel"><div class="panel-head"><h2>Payment tracker</h2><div class="actions"><button class="pale" data-act="yr" data-id="-1" aria-label="Previous year">‹</button><strong>${yr}</strong><button class="pale" data-act="yr" data-id="1" aria-label="Next year">›</button></div></div>
+<p class="hint">${paidMonths} of ${req} required month${req===1?'':'s'} paid · dues started ${monthLabel(START)}</p><div class="progress"><div style="width:${pct}%"></div></div><br>
+<div class="months">${tiles}</div></section>`;
+}
+
+function adminDashboardView() {
+  const members = users.filter(u=>u.role==='MEMBER').sort((a,b)=>a.name.localeCompare(b.name));
+  const rows = members.map(u => { let owed = 0;
+    for (let k = from(u); k <= cur; k = shiftMonth(k,1)) owed += Math.max(0, FEE - paidFor(u.id,k));
+    return {u, paid:paidFor(u.id,adminMonth), st:monthStatus(u,adminMonth), owed, total:pays.filter(p=>p.userId===u.id).reduce((s,p)=>s+p.amount,0)}; });
+  const required = rows.filter(r=>r.st!=='na'), paidCount = rows.filter(r=>r.st==='paid').length;
+  const collected = pays.filter(p=>p.month===adminMonth).reduce((s,p)=>s+p.amount,0);
+  const outstanding = rows.reduce((s,r)=>s+r.owed,0), allTime = pays.reduce((s,p)=>s+p.amount,0);
+  const pct = Math.min(100, Math.round(100*collected/Math.max(required.length*FEE,1)));
+  const recent = [...pays].sort((a,b)=>b.at-a.at).slice(0,5), latest = [...anns].sort((a,b)=>b.at-a.at).slice(0,3);
+  return `<div class="panel-head"><h1 style="margin:0 0 1.25rem">Admin Dashboard</h1><span class="badge">ADMIN SPACE</span></div>
+<div class="stats"><div class="stat"><span>Members</span><strong>${members.length}</strong></div>
+<div class="stat"><span>Paid for ${monthLabel(adminMonth)}</span><strong>${paidCount} of ${required.length}</strong></div>
+<div class="stat"><span>Collected in ${monthLabel(adminMonth)}</span><strong>${cedis(collected)}</strong></div>
+<div class="stat"><span>Still owed to date</span><strong style="color:${outstanding?'var(--danger)':'var(--green)'}">${cedis(outstanding)}</strong></div>
+<div class="stat"><span>Collected since ${monthLabel(START)}</span><strong>${cedis(allTime)}</strong></div></div>
+<section class="panel"><h2>Message to members</h2><p class="hint">Shown at the top of every member's dashboard.</p><br>
+<form class="grid" id="pin"><label class="wide">Message<textarea name="msg" placeholder="For example: Dues of GH₵20 are paid to the treasurer by the 5th of each month.">${esc(pin)}</textarea></label>
+<button>Save message</button><button type="button" class="pale" data-act="clearPin">Clear message</button></form></section>
+<section class="panel"><div class="panel-head"><h2>Members this month</h2><div class="actions"><button class="pale" data-act="mon" data-id="-1" aria-label="Previous month"${adminMonth<=START?' disabled':''}>‹</button><strong>${monthLabel(adminMonth)}</strong><button class="pale" data-act="mon" data-id="1" aria-label="Next month"${adminMonth>=cur?' disabled':''}>›</button></div></div>
+<p class="hint">${cedis(collected)} of ${cedis(required.length*FEE)} expected</p><div class="progress"><div style="width:${pct}%"></div></div><br>
+${rows.length?`<div class="scroll"><table><thead><tr><th>Member</th><th>Status</th><th class="num">Paid this month</th><th class="num">Owed to date</th><th class="num">Total paid</th><th></th></tr></thead><tbody>${rows.map(r=>`<tr><td><button class="link" data-act="open" data-id="${r.u.id}">${esc(r.u.name)}</button></td><td><span class="chip ${r.st}">${LABEL[r.st]}</span></td><td class="num">${cedis(r.paid)}</td><td class="num">${cedis(r.owed)}</td><td class="num">${cedis(r.total)}</td><td>${r.st==='due'||r.st==='overdue'?`<button class="link danger" data-act="markNot" data-id="${r.u.id}" data-m="${adminMonth}">Mark not paid</button>`:r.st==='missed'?`<button class="link" data-act="clearMark" data-id="${r.u.id}" data-m="${adminMonth}">Undo</button>`:''}</td></tr>`).join('')}</tbody></table></div>`:'<p class="empty">No one has created an account yet. Members sign up themselves from the sign-in page.</p>'}</section>
+<section class="panel"><h2>Quick actions</h2><div class="actions"><button data-act="nav" data-id="payments">Record a payment</button><button class="pale" data-act="nav" data-id="events">Post an announcement</button><button class="pale" data-act="nav" data-id="members">Manage members</button></div></section>
+<section class="panel"><h2>Recent payments</h2>${recent.length?`<div class="scroll"><table><tbody>${recent.map(p=>`<tr><td>${esc(nameOf(p.userId))}</td><td>${monthLabel(p.month)}</td><td class="num">${cedis(p.amount)}</td><td>${new Date(p.at).toLocaleDateString()}</td></tr>`).join('')}</tbody></table></div>`:'<p class="empty">No payments recorded yet.</p>'}</section>
+<section class="panel"><h2>Latest announcements</h2>${latest.length?latest.map(a=>`<article class="ann">${a.date?`<span class="chip due">${dateLabel(a.date)}</span>`:''}<h3>${esc(a.title)}</h3></article>`).join(''):'<p class="empty">Nothing has been announced yet.</p>'}</section>`;
+}
+
+function recordsView() {
+  const mine = pays.filter(p=>p.userId===session.id).sort((a,b)=>b.month.localeCompare(a.month)||b.id-a.id);
+  return `<h1>My Records</h1><section class="panel"><div class="panel-head"><h2>Payments recorded for you</h2><p class="hint">Total <strong>${cedis(mine.reduce((s,p)=>s+p.amount,0))}</strong></p></div>
+${mine.length?`<div class="scroll"><table><thead><tr><th>Month</th><th class="num">Amount</th><th>Recorded on</th><th>Note</th></tr></thead><tbody>${mine.map(p=>`<tr><td>${monthLabel(p.month)}</td><td class="num">${cedis(p.amount)}</td><td>${new Date(p.at).toLocaleDateString()}</td><td>${esc(p.note)}</td></tr>`).join('')}</tbody></table></div>`:'<p class="empty">No payments are recorded for you yet.</p>'}</section>`;
+}
+
+function currentView() {
+  const u = users.find(x=>x.id===session.id), amt = paidFor(u.id,cur), st = monthStatus(u,cur);
+  const msg = st==='paid' ? 'Thank you, your dues for this month are fully paid.' : st==='partial' ? `You still owe ${cedis(FEE-amt)} for this month.` : (st==='missed' ? 'The admin has marked this month as not paid.' : `Your ${cedis(FEE)} dues for this month have not been recorded yet.`);
+  return `<h1>Current Month</h1><section class="panel big"><h2>${monthLabel(cur)}</h2><span class="chip ${st}">${LABEL[st]}</span>
+<p class="amt">${cedis(amt)} <small style="font-size:1rem;color:var(--muted)">of ${cedis(FEE)}</small></p><p>${msg}</p></section>`;
+}
+
+function eventsView(media) {
+  const admin = session.role === 'ADMIN', list = [...anns].sort((a,b)=>b.at-a.at);
+  return `<h1>Events & Announcements</h1>
+${admin?`<section class="panel"><h2>Post an announcement or event</h2><form class="grid" id="addAnn"><label>Title<input name="title" required></label><label>Event date (optional)<input type="date" name="date"></label>
+<label class="wide">Details<textarea name="body" required></textarea></label><button>Post</button></form></section>
+<section class="panel"><h2>Upload a photo or video</h2><form class="grid" id="upload"><label>Title<input name="title" required></label><label>File<input type="file" name="file" accept="image/*,video/*" required></label><button>Upload</button></form></section>`:''}
+<section class="panel"><h2>Upcoming events and announcements</h2>${list.length?list.map(a=>`<article class="ann">${a.date?`<span class="chip due">${dateLabel(a.date)}</span>`:''}<h3>${esc(a.title)}</h3><p>${esc(a.body)}</p>${admin?`<button class="link danger" data-act="delAnn" data-id="${a.id}">Delete</button>`:''}</article>`).join(''):'<p class="empty">Nothing has been announced yet.</p>'}</section>
+<section class="panel"><h2>Photos and videos</h2>${gallery(media,admin)}</section>`;
+}
+
+function paymentsView() {
+  const members = users.filter(u=>u.role==='MEMBER').sort((a,b)=>a.name.localeCompare(b.name));
+  const rows = pays.filter(p=>!filter||String(p.userId)===filter).sort((a,b)=>b.month.localeCompare(a.month)||b.id-a.id);
+  const paidNow = members.filter(m=>paidFor(m.id,cur)>=FEE).length, collected = pays.filter(p=>p.month===cur).reduce((s,p)=>s+p.amount,0);
+  const opt = (m,sel) => `<option value="${m.id}"${String(m.id)===String(sel)?' selected':''}>${esc(m.name)}</option>`;
+  return `<h1>Payments</h1><div class="stats"><div class="stat"><span>Members</span><strong>${members.length}</strong></div>
+<div class="stat"><span>Paid for ${monthLabel(cur)}</span><strong>${paidNow} of ${members.length}</strong></div><div class="stat"><span>Collected this month</span><strong>${cedis(collected)}</strong></div></div>
+<section class="panel"><h2>Record a payment</h2><form class="grid" id="addPay"><label>Member<select name="userId" required><option value="">Choose a member</option>${members.map(m=>opt(m,last.userId)).join('')}</select></label>
+<label>Month<input type="month" name="month" value="${last.month}" min="${START}" required></label><label>Amount (GH₵)<input type="number" name="amount" step="0.01" min="0.01" value="${FEE}" required></label>
+<label>Note (optional)<input name="note"></label><button>Save payment</button></form><p id="dupWarn" role="status" style="color:#7a5a0e;font-weight:600;margin:.75rem 0 0" hidden></p></section>
+<section class="panel"><div class="panel-head"><h2>All payments</h2><div class="actions"><select id="filter" aria-label="Filter by member"><option value="">All members</option>${members.map(m=>opt(m,filter)).join('')}</select><button class="pale" data-act="csv">Download CSV</button></div></div>
+${rows.length?`<div class="scroll"><table><thead><tr><th>Member</th><th>Month</th><th class="num">Amount</th><th>Note</th><th></th></tr></thead><tbody>${rows.map(p=>`<tr><td>${esc(nameOf(p.userId))}</td><td>${monthLabel(p.month)}</td><td class="num">${cedis(p.amount)}</td><td>${esc(p.note)}</td><td><button class="link danger" data-act="delPay" data-id="${p.id}">Delete</button></td></tr>`).join('')}</tbody>
+<tfoot><tr><td colspan="2">Total</td><td class="num">${cedis(rows.reduce((s,p)=>s+p.amount,0))}</td><td colspan="2"></td></tr></tfoot></table></div>`:'<p class="empty">No payments recorded yet.</p>'}</section>`;
+}
+
+function membersView() {
+  const members = users.filter(u=>u.role==='MEMBER').sort((a,b)=>a.name.localeCompare(b.name));
+  return `<h1>Members</h1><section class="panel"><div class="panel-head"><h2>${members.length} member${members.length===1?'':'s'}</h2><button class="pale" data-act="reveal">${reveal?'Hide':'Show'} phone numbers</button></div>
+${members.length?`<div class="scroll"><table><thead><tr><th>Name</th><th>Phone</th><th>Joined</th><th></th></tr></thead><tbody>${members.map(m=>`<tr><td><button class="link" data-act="open" data-id="${m.id}">${esc(m.name)}</button></td><td>${esc(mask(m.phone))}</td><td>${monthLabel(m.joined)}</td><td><button class="link" data-act="open" data-id="${m.id}">View records</button> &nbsp; <button class="link" data-act="resetPw" data-id="${m.id}">Reset password</button> &nbsp; <button class="link danger" data-act="delMember" data-id="${m.id}">Remove</button></td></tr>`).join('')}</tbody></table></div>`:'<p class="empty">No one has created an account yet. Members sign up themselves from the sign-in page.</p>'}</section>
+<section class="panel"><h2>Database backup</h2><p class="hint">Saves all members, payments and announcements to a file you can keep safe or move to another computer. Photos and videos are not included. Keep the file private.</p><br>
+<div class="actions"><button data-act="backup">Download backup</button></div><br>
+<form class="grid" id="restore"><label>Restore from a backup file<input type="file" name="file" accept=".json,application/json" required></label><button class="pale">Restore backup</button></form>
+<p class="error" id="err" role="alert" hidden></p></section>`;
+}
+
+function memberView() {
+  const u = users.find(x=>x.id===viewId); if (!u) return '<h1>Member not found</h1>';
+  const rows = pays.filter(p=>p.userId===u.id).sort((a,b)=>b.month.localeCompare(a.month)||b.id-a.id);
+  return `<p><button class="pale" data-act="nav" data-id="members">← All members</button></p>${dashboardView(u.id, u.name)}
+<section class="panel"><div class="panel-head"><h2>Details</h2><div class="actions"><button class="pale" data-act="reveal">${reveal?'Hide':'Show'} phone number</button><button data-act="payFor" data-id="${u.id}">Record a payment</button></div></div>
+<p>Phone: <strong>${esc(mask(u.phone))}</strong><br>Joined: ${monthLabel(u.joined)}</p></section>
+<section class="panel"><h2>Missed months</h2><form class="grid" id="markForm"><input type="hidden" name="userId" value="${u.id}"><label>Month<input type="month" name="month" min="${START}" max="${cur}" value="${cur}" required></label><button>Mark not paid</button></form><p class="error" id="err" role="alert" hidden></p>
+${marks.filter(x=>x.userId===u.id).sort((a,b)=>b.month.localeCompare(a.month)).map(x=>`<p style="margin:.6rem 0 0"><span class="chip missed">${monthLabel(x.month)}</span> marked not paid &nbsp; <button class="link" data-act="clearMark" data-id="${u.id}" data-m="${x.month}">Undo</button></p>`).join('')}</section>
+<section class="panel"><h2>Payments recorded</h2>${rows.length?`<div class="scroll"><table><thead><tr><th>Month</th><th class="num">Amount</th><th>Recorded on</th><th>Note</th><th></th></tr></thead><tbody>${rows.map(p=>`<tr><td>${monthLabel(p.month)}</td><td class="num">${cedis(p.amount)}</td><td>${new Date(p.at).toLocaleDateString()}</td><td>${esc(p.note)}</td><td><button class="link danger" data-act="delPay" data-id="${p.id}">Delete</button></td></tr>`).join('')}</tbody><tfoot><tr><td>Total</td><td class="num">${cedis(rows.reduce((t,p)=>t+p.amount,0))}</td><td colspan="3"></td></tr></tfoot></table></div>`:'<p class="empty">No payments recorded for this member yet.</p>'}</section>`;
+}
+
+function trashView(binMedia) {
+  const pb = bin.filter(x=>x.kind==='pay').sort((a,b)=>b.at-a.at), ab = bin.filter(x=>x.kind==='ann').sort((a,b)=>b.at-a.at);
+  const when = t => new Date(t).toLocaleDateString();
+  const actions = id => `<button class="link" data-act="restore" data-id="${id}">Restore</button> &nbsp; <button class="link danger" data-act="purge" data-id="${id}">Delete forever</button>`;
+  return `<h1>Deleted items</h1><p class="hint">Deleted payments, events and photos wait here until you delete them forever.</p><br>
+<section class="panel"><h2>Payments</h2>${pb.length?`<div class="scroll"><table><thead><tr><th>Member</th><th>Month</th><th class="num">Amount</th><th>Deleted on</th><th></th></tr></thead><tbody>${pb.map(x=>`<tr><td>${esc(nameOf(x.item.userId))}</td><td>${monthLabel(x.item.month)}</td><td class="num">${cedis(x.item.amount)}</td><td>${when(x.at)}</td><td>${actions(x.bid)}</td></tr>`).join('')}</tbody></table></div>`:'<p class="empty">No deleted payments.</p>'}</section>
+<section class="panel"><h2>Events and announcements</h2>${ab.length?ab.map(x=>`<article class="ann">${x.item.date?`<span class="chip due">${dateLabel(x.item.date)}</span>`:''}<h3>${esc(x.item.title)}</h3><p>${esc(x.item.body)}</p><p class="hint">Deleted on ${when(x.at)}</p>${actions(x.bid)}</article>`).join(''):'<p class="empty">No deleted events or announcements.</p>'}</section>
+<section class="panel"><h2>Photos and videos</h2>${binMedia.length?`<div class="gallery">${binMedia.map(m=>{ const u = URL.createObjectURL(m.blob); urls.push(u);
+  const el = m.type.startsWith('video/') ? `<video src="${u}" controls preload="metadata"></video>` : `<img src="${u}" alt="${esc(m.title)}">`;
+  return `<figure>${el}<figcaption><span>${esc(m.title)}</span><span><button class="link" data-act="restoreMedia" data-id="${m.id}">Restore</button> <button class="link danger" data-act="purgeMedia" data-id="${m.id}">Forever</button></span></figcaption></figure>`; }).join('')}</div>`:'<p class="empty">No deleted photos or videos.</p>'}</section>`;
+}
+
+function accountView() {
+  const u = users.find(x=>x.id===session.id);
+  return `<h1>Account</h1><section class="panel"><h2>Change password</h2><form class="grid" id="chPw">
+<label>Current password<input type="password" name="old" autocomplete="current-password" required></label>
+<label>New password<input type="password" name="pw" minlength="6" autocomplete="new-password" required></label><button>Change password</button></form>
+<p class="error" id="err" role="alert" hidden></p></section>
+<section class="panel"><div class="panel-head"><h2>Your details</h2><button class="pale" data-act="reveal">${reveal?'Hide':'Show'} phone number</button></div><p>${esc(u.name)}<br>${esc(mask(u.phone))}</p></section>`;
+}
+
+async function render() {
+  urls.forEach(u=>URL.revokeObjectURL(u)); urls = [];
+  if (!session) { $('#app').innerHTML = loginView(); return; }
+  const media = page === 'events' ? await allMedia() : [];
+  const binned = page === 'trash' ? await deletedMedia() : [];
+  const views = { dashboard:()=>session.role==='ADMIN'?adminDashboardView():dashboardView(), records:recordsView, current:currentView, events:()=>eventsView(media), payments:paymentsView, members:membersView, member:memberView, account:accountView, trash:()=>trashView(binned) };
+  $('#app').innerHTML = header() + `<main class="page">${views[page]()}</main>`;
+}
+const showError = m => { const e = $('#err'); if (e) { e.textContent = m; e.hidden = false; } };
+const signIn = u => { session = {id:u.id, name:u.name, role:u.role}; sessionStorage.setItem('hm_session', JSON.stringify(session)); hist = []; notice = ''; page = 'dashboard'; };
+
+/* ===== actions ===== */
+document.addEventListener('submit', async e => {
+  e.preventDefault(); const f = e.target, d = Object.fromEntries(new FormData(f));
+  if (f.id === 'adminLogin') {
+    if (Date.now() < lockUntil) return showError('Too many wrong attempts. Please wait 30 seconds and try again.');
+    const adm = users.find(x=>x.role==='ADMIN');
+    if (!adm || !(await checkPw(adm, d.pw))) { if (++fails >= 5) { lockUntil = Date.now() + 30000; fails = 0; } return showError('Wrong admin password.'); }
+    fails = 0; signIn(adm);
+  } else if (f.id === 'login') {
+    const phone = normPhone(d.phone);
+    if (!phone) return showError('Enter a valid phone number, for example 0241234567');
+    const acct = users.find(x=>x.phone===phone);
+    if (!acct) return showError('No account was found for that phone number. Check the number, or create an account.');
+    if (!(await checkPw(acct, d.pw))) return showError(f.id === 'login' ? 'Wrong password. Try again, or use "Forgot your password?"' : 'Wrong password. Try again.');
+    if (f.id === 'adminLogin' && acct.role !== 'ADMIN') return showError('That account is not an administrator. Members sign in on the Member tab.');
+    if (f.id === 'login' && acct.role === 'ADMIN') return showError('Administrators sign in on the Admin tab.');
+    if (!acct.salt) { const keep = acct.defaultPw; await setPw(acct, d.pw); if (keep) acct.defaultPw = true; save(); }
+    signIn(acct);
+  } else if (f.id === 'forgot') {
+    const phone = normPhone(d.phone), acct = phone && users.find(x=>x.phone===phone);
+    const same = t => t.trim().replace(/\s+/g,' ').toLowerCase();
+    if (!acct || acct.role === 'ADMIN' || same(acct.name) !== same(d.name)) return showError('We could not match that full name and phone number to a member account.');
+    await setPw(acct, d.pw); save(); mode = 'login'; notice = 'Your password has been changed. Sign in with the new password.';
+  } else if (f.id === 'signup') {
+    const phone = normPhone(d.phone);
+    if (!phone) return showError('Enter a valid phone number, for example 0241234567');
+    if (users.some(x=>x.phone===phone)) return showError('That phone number already has an account');
+    const u = {id:nextId(users), name:d.name.trim().replace(/\s+/g,' '), phone, role:'MEMBER', joined:cur};
+    await setPw(u, d.pw); users.push(u); save(); signIn(u);
+  } else if (f.id === 'pin') {
+    pin = d.msg.trim(); save();
+  } else if (f.id === 'markForm') {
+    const uid = Number(d.userId), mu = users.find(x=>x.id===uid);
+    if (!mu || d.month < from(mu) || d.month > cur) return showError('Choose a month from ' + monthLabel(from(mu || {joined:START})) + ' to ' + monthLabel(cur) + '.');
+    if (paidFor(uid, d.month) > 0) return showError('That month already has a payment recorded.');
+    if (!isMarked(uid, d.month)) { marks.push({id:nextId(marks), userId:uid, month:d.month, at:Date.now()}); save(); }
+  } else if (f.id === 'chPw') {
+    const me = users.find(x=>x.id===session.id);
+    if (!(await checkPw(me, d.old))) return showError('Your current password is not correct.');
+    await setPw(me, d.pw); save(); alert('Your password has been changed.');
+  } else if (f.id === 'restore') {
+    let data; try { data = JSON.parse(await f.file.files[0].text()); } catch { return showError('That file is not a valid backup.'); }
+    if (!data || !Array.isArray(data.users) || !Array.isArray(data.pays) || !Array.isArray(data.anns) || !data.users.some(u=>u.role==='ADMIN')) return showError('That file is not a valid HAIL MARY backup.');
+    if (!confirm('Replace all current records with this backup?')) return;
+    users = data.users; pays = data.pays; anns = data.anns; pin = typeof data.pin === 'string' ? data.pin : ''; marks = Array.isArray(data.marks) ? data.marks : []; bin = Array.isArray(data.bin) ? data.bin : []; save();
+    if (!users.some(u=>u.id===session.id)) { session = null; page = null; sessionStorage.removeItem('hm_session'); }
+  } else if (f.id === 'addPay') {
+    const prior = paidFor(Number(d.userId), d.month);
+    if (prior > 0 && !confirm(nameOf(Number(d.userId)) + ' already has ' + cedis(prior) + ' recorded for ' + monthLabel(d.month)
+        + (prior >= FEE ? ' (fully paid).' : ', and still owes ' + cedis(FEE - prior) + '.')
+        + '\n\nDo you want to add another payment of ' + cedis(d.amount) + ' for the same month?')) return;
+    last = {userId:d.userId, month:d.month};
+    pays.push({id:nextId(pays), userId:Number(d.userId), month:d.month, amount:Number(d.amount), note:d.note.trim(), at:Date.now()});
+    marks = marks.filter(x=>!(x.userId===Number(d.userId) && x.month===d.month)); save();
+  } else if (f.id === 'addAnn') {
+    anns.push({id:nextId(anns), title:d.title.trim(), date:d.date, body:d.body.trim(), at:Date.now()}); save();
+  } else if (f.id === 'upload') {
+    const file = f.file.files[0];
+    await tx('readwrite', s => s.add({title:d.title.trim(), type:file.type, blob:file, at:Date.now()}));
+  }
+  render();
+});
+function dupNotice() {
+  const f = $('#addPay'), w = $('#dupWarn'); if (!f || !w) return;
+  const uid = Number(f.userId.value), mo = f.month.value, ex = uid && mo ? paidFor(uid, mo) : 0;
+  w.hidden = !ex;
+  if (ex) w.textContent = 'Heads up: ' + nameOf(uid) + ' already has ' + cedis(ex) + ' recorded for ' + monthLabel(mo) + (ex >= FEE ? ' (fully paid).' : ', and still owes ' + cedis(FEE - ex) + '.');
+}
+document.addEventListener('change', e => {
+  if (e.target.id === 'filter') { filter = e.target.value; render(); }
+  else if (e.target.form && e.target.form.id === 'addPay') dupNotice();
+});
+document.addEventListener('click', async e => {
+  const b = e.target.closest('[data-act]'); if (!b) return;
+  const act = b.dataset.act, id = Number(b.dataset.id);
+  if (act === 'showpw') { $('#pw').type = b.checked ? 'text' : 'password'; return; }
+  else if (act === 'mode') { mode = b.dataset.id; notice = ''; }
+  else if (act === 'role') { mode = b.dataset.id === 'admin' ? 'admin' : 'login'; notice = ''; }
+  else if (act === 'nav') go(b.dataset.id);
+  else if (act === 'reveal') reveal = !reveal;
+  else if (act === 'copy') { try { await navigator.clipboard.writeText(PAY_NUMBER); alert('Number copied.'); } catch { alert('Could not copy automatically. The number is ' + PAY_NUMBER); } return; }
+  else if (act === 'clearPin') { pin = ''; save(); }
+  else if (act === 'markNot') { const mm = b.dataset.m; if (paidFor(id, mm) > 0) return alert('That month already has a payment recorded.'); if (!isMarked(id, mm)) marks.push({id:nextId(marks), userId:id, month:mm, at:Date.now()}); save(); }
+  else if (act === 'clearMark') { marks = marks.filter(x=>!(x.userId===id && x.month===b.dataset.m)); save(); }
+  else if (act === 'restore') { const e2 = bin.find(x=>x.bid===id);
+    if (e2) { if (e2.kind === 'pay') { if (!users.some(u=>u.id===e2.item.userId)) return alert('This member has been removed, so the payment cannot be restored.'); e2.item.id = nextId(pays); pays.push(e2.item); }
+      else { e2.item.id = nextId(anns); anns.push(e2.item); } bin = bin.filter(x=>x.bid!==id); save(); } }
+  else if (act === 'purge') { if (!confirm('Delete this forever? This cannot be undone.')) return; bin = bin.filter(x=>x.bid!==id); save(); }
+  else if (act === 'restoreMedia') { const rm = await tx('readonly', s=>s.get(id)); if (rm) { delete rm.deleted; await tx('readwrite', s=>s.put(rm)); } }
+  else if (act === 'purgeMedia') { if (!confirm('Delete this file forever? This cannot be undone.')) return; await tx('readwrite', s=>s.delete(id)); }
+  else if (act === 'mon') { const n = shiftMonth(adminMonth, id); if (n >= START && n <= cur) adminMonth = n; }
+  else if (act === 'open') { viewId = id; go('member'); }
+  else if (act === 'payFor') { last = {userId:String(id), month:cur}; go('payments'); }
+  else if (act === 'backup') {
+    const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([JSON.stringify({app:'hail-mary', saved:new Date().toISOString(), users, pays, anns, pin, marks, bin})],{type:'application/json'}));
+    a.download = 'hail-mary-backup.json'; a.click(); return;
+  }
+  else if (act === 'back') { reveal = false; if (hist.length) page = hist.pop(); }
+  else if (act === 'logout') { reveal = false; session = null; page = null; hist = []; mode = 'login'; sessionStorage.removeItem('hm_session'); }
+  else if (act === 'yr') yr = Math.max(+START.slice(0,4), yr + id);
+  else if (act === 'delPay') { if (!confirm('Delete this payment record? You can restore it from Deleted items.')) return; const dp = pays.find(x=>x.id===id); if (dp) toBin('pay', dp); pays = pays.filter(p=>p.id!==id); save(); }
+  else if (act === 'delAnn') { if (!confirm('Delete this post? You can restore it from Deleted items.')) return; const da = anns.find(x=>x.id===id); if (da) toBin('ann', da); anns = anns.filter(a=>a.id!==id); save(); }
+  else if (act === 'resetPw') { const np = prompt('Type a temporary password for this member (at least 6 characters):'); if (!np) return; if (np.length < 6) return alert('The password must be at least 6 characters.'); await setPw(users.find(u=>u.id===id), np); save(); alert('Password changed. Give the member this temporary password.'); return; }
+  else if (act === 'delMember') { if (!confirm('Remove this member and all their payment records?')) return; users = users.filter(u=>u.id!==id); pays = pays.filter(p=>p.userId!==id); save(); }
+  else if (act === 'delMedia') { if (!confirm('Delete this file? You can restore it from Deleted items.')) return; const dm = await tx('readonly', s=>s.get(id)); if (dm) { dm.deleted = Date.now(); await tx('readwrite', s=>s.put(dm)); } }
+  else if (act === 'csv') {
+    const q = v => `"${String(v??'').replace(/"/g,'""')}"`;
+    const rows = [['Member','Phone','Month','Amount (GHS)','Note'], ...pays.map(p=>[nameOf(p.userId), (users.find(u=>u.id===p.userId)||{}).phone, p.month, p.amount, p.note])];
+    const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([rows.map(r=>r.map(q).join(',')).join('\n')],{type:'text/csv'}));
+    a.download = 'hail-mary-payments.csv'; a.click(); return;
+  }
+  render();
+});
+
+if (session) page = 'dashboard';
+(async () => {
+  const cfg = await hashPw(ADMIN_PW, 'cfg'), adm = users.find(x=>x.role==='ADMIN');
+  if (adm && LS.get('hm_admincfg', '') !== cfg) { await setPw(adm, ADMIN_PW); save(); LS.set('hm_admincfg', cfg); }
+  render();
+})();
+</script>
+</body>
+</html>
